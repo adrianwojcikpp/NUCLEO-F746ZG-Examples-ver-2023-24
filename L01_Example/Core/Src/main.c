@@ -88,35 +88,21 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  _Bool LD_Seq[][LD_Num] = {
-    { 1, 0, 0 },
-    { 0, 1, 0 },
-    { 0, 0, 1 }
-  };
-  uint16_t LD_Pins[LD_Num] = {
-      LD1_Pin, LD2_Pin, LD3_Pin
-  };
-  int i = 0;
-  uint16_t pins;
+  GPIO_PinState USER_Btn_State, USER_Btn_StatePrev = GPIO_PIN_RESET;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    pins = 0;
-    for(int ld = 0; ld < LD_Num; ld++)
-      pins |= LD_Seq[i][ld]*LD_Pins[ld];
-    HAL_GPIO_WritePin(LD_GPIO_Port, pins, GPIO_PIN_SET);
+    USER_Btn_State = HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin);
 
-    pins = 0;
-    for(int ld = 0; ld < LD_Num; ld++)
-      pins |= !LD_Seq[i][ld]*LD_Pins[ld];
-    HAL_GPIO_WritePin(LD_GPIO_Port, pins, GPIO_PIN_RESET);
+    if(USER_Btn_State == GPIO_PIN_SET && USER_Btn_StatePrev == GPIO_PIN_RESET)
+      HAL_GPIO_TogglePin(LD_GPIO_Port, LD1_Pin);
 
-    i = (i + 1) % LD_Num;
+    USER_Btn_StatePrev = USER_Btn_State;
 
-    HAL_Delay(100);
+    HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

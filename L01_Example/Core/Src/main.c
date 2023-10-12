@@ -56,6 +56,21 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == ON_Btn_Pin)
+  {
+    HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+    HAL_GPIO_TogglePin(LD5_GPIO_Port, LD5_Pin);
+    HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
+  }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -88,21 +103,13 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  GPIO_PinState USER_Btn_State, USER_Btn_StatePrev = GPIO_PIN_RESET;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    USER_Btn_State = HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin);
-
-    if(USER_Btn_State == GPIO_PIN_SET && USER_Btn_StatePrev == GPIO_PIN_RESET)
-      HAL_GPIO_TogglePin(LD_GPIO_Port, LD1_Pin);
-
-    USER_Btn_StatePrev = USER_Btn_State;
-
-    HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -93,16 +93,29 @@ int main(void)
     { 0, 1, 0 },
     { 0, 0, 1 }
   };
+  uint16_t LD_Pins[LD_Num] = {
+      LD1_Pin, LD2_Pin, LD3_Pin
+  };
   int i = 0;
+  uint16_t pins;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_WritePin(LD_GPIO_Port,  LD_Seq[i][0]*LD1_Pin |  LD_Seq[i][1]*LD2_Pin |  LD_Seq[i][2]*LD3_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LD_GPIO_Port, !LD_Seq[i][0]*LD1_Pin | !LD_Seq[i][1]*LD2_Pin | !LD_Seq[i][2]*LD3_Pin, GPIO_PIN_RESET);
+    pins = 0;
+    for(int ld = 0; ld < LD_Num; ld++)
+      pins |= LD_Seq[i][ld]*LD_Pins[ld];
+    HAL_GPIO_WritePin(LD_GPIO_Port, pins, GPIO_PIN_SET);
+
+    pins = 0;
+    for(int ld = 0; ld < LD_Num; ld++)
+      pins |= !LD_Seq[i][ld]*LD_Pins[ld];
+    HAL_GPIO_WritePin(LD_GPIO_Port, pins, GPIO_PIN_RESET);
+
     i = (i + 1) % LD_Num;
+
     HAL_Delay(100);
     /* USER CODE END WHILE */
 

@@ -24,7 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include "btn_config.h"
+#include "serial_api_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,7 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define array_size(x) (sizeof(x)/sizeof(x[0]))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,7 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t tx_char;
+uint8_t tx_buffer[100];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,20 +57,6 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /**
-  * @brief Tx Transfer completed callback.
-  * @param huart UART handle.
-  * @retval None
-  */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if(huart == &huart3)
-  {
-    HAL_UART_Receive_IT(&huart3, &tx_char, 1);
-  }
-}
-
-
-/**
   * @brief  Rx Transfer completed callback.
   * @param  huart UART handle.
   * @retval None
@@ -79,7 +65,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart == &huart3)
   {
-    HAL_UART_Transmit_IT(&huart3, &tx_char, 1);
+    // TODO: Add validation
+    SERIAL_API_LED_ReadMsg((char*)tx_buffer, hleds, array_size(hleds));
+
+    for(int i = 0; i < array_size(hleds); i++)
+      LED_DIO_Write(hleds[i].Led, hleds[i].State);
+
+    HAL_UART_Receive_IT(&huart3, tx_buffer, SERIAL_API_LED_MSG_LEN);
   }
 }
 /* USER CODE END 0 */
@@ -114,7 +106,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart3, &tx_char, 1);
+  HAL_UART_Receive_IT(&huart3, tx_buffer, SERIAL_API_LED_MSG_LEN);
   /* USER CODE END 2 */
 
   /* Infinite loop */

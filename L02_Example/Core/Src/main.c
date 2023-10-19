@@ -45,7 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t tx_char;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +56,32 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/**
+  * @brief Tx Transfer completed callback.
+  * @param huart UART handle.
+  * @retval None
+  */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart == &huart3)
+  {
+    HAL_UART_Receive_IT(&huart3, &tx_char, 1);
+  }
+}
 
+
+/**
+  * @brief  Rx Transfer completed callback.
+  * @param  huart UART handle.
+  * @retval None
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart == &huart3)
+  {
+    HAL_UART_Transmit_IT(&huart3, &tx_char, 1);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -89,15 +114,13 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t tx_char;
+  HAL_UART_Receive_IT(&huart3, &tx_char, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if(HAL_UART_Receive(&huart3, &tx_char, 1, HAL_MAX_DELAY) == HAL_OK)
-      HAL_UART_Transmit(&huart3, &tx_char, 1, 1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

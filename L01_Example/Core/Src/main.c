@@ -63,8 +63,12 @@ void SystemClock_Config(void);
   */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if(GPIO_Pin == USER_Btn_Pin)
-    HAL_GPIO_TogglePin(LD_GPIO_Port, LD1_Pin);
+  if(GPIO_Pin == ON_Btn_Pin)
+  {
+    HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+    HAL_GPIO_TogglePin(LD5_GPIO_Port, LD5_Pin);
+    HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
+  }
 }
 
 /* USER CODE END 0 */

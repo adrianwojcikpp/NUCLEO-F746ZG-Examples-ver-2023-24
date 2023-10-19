@@ -23,8 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <string.h>
-#include "led_config.h"
+#include <stdio.h>
+#include "btn_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -89,20 +89,22 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  const uint8_t tx_message[] = "Hello, Nucleo!\r\n";
-
-  HAL_StatusTypeDef tx_status = HAL_UART_Transmit(&huart3, tx_message, strlen((char*)tx_message), 10);
-
-  if(tx_status == HAL_OK)
-    LED_DIO_On(&hldg1);
-  else
-    LED_DIO_On(&hldr1);
+  unsigned int USER_Btn_Cnt = 0;
+  //uint8_t tx_buffer[128];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if(BTN_DIO_EdgeDetected(&husrbtn) == BTN_PRESSED_EDGE)
+    {
+      USER_Btn_Cnt++;
+      uint8_t tx_buffer[128];
+      uint16_t tx_msg_len = sprintf((char*)tx_buffer, "Hello no. %d \r\n", USER_Btn_Cnt);
+      HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 10);
+    }
+    HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

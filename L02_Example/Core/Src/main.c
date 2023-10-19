@@ -89,22 +89,15 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  unsigned int USER_Btn_Cnt = 0;
-  //uint8_t tx_buffer[128];
+  uint8_t tx_char;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if(BTN_DIO_EdgeDetected(&husrbtn) == BTN_PRESSED_EDGE)
-    {
-      USER_Btn_Cnt++;
-      uint8_t tx_buffer[128];
-      uint16_t tx_msg_len = sprintf((char*)tx_buffer, "Hello no. %d \r\n", USER_Btn_Cnt);
-      HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 10);
-    }
-    HAL_Delay(10);
+    if(HAL_UART_Receive(&huart3, &tx_char, 1, HAL_MAX_DELAY) == HAL_OK)
+      HAL_UART_Transmit(&huart3, &tx_char, 1, 1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

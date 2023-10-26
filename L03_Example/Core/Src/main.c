@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +46,9 @@
 
 /* USER CODE BEGIN PV */
 _Bool Var = 0;
+
+uint8_t tx_buffer[8];
+const int tx_msg_len = 4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,6 +71,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
 	Var ^= 1; // for software tools
 	HAL_GPIO_TogglePin(OSCILLOSCOPE_OUT_GPIO_Port, OSCILLOSCOPE_OUT_Pin); // for hardware tools (oscilloscope)
+  }
+}
+
+/**
+  * @brief  Rx Transfer completed callback.
+  * @param  huart UART handle.
+  * @retval None
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart == &huart3)
+  {
+    int time_ms = strtol((char*)tx_buffer, 0, 10);
+    int tim3_arr = time_ms*1000 - 1;
+
+    HAL_TIM_Base_Stop_IT(&htim2);
+    __HAL_TIM_SET_COUNTER(&htim2, 0);
+    __HAL_TIM_SET_AUTORELOAD(&htim2, tim3_arr);
+    HAL_TIM_Base_Start_IT(&htim2);
+
+    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   }
 }
 
@@ -105,6 +129,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
   /* Infinite loop */

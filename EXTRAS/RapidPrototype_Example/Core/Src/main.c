@@ -166,8 +166,6 @@ int main(void)
         digit_cnt = (digit_cnt - 1) % digit_max;
         DISP_TM1637_printDecUInt(&hdisp1, pos_temp);
       }
-
-
     }
     /* USER CODE END WHILE */
 

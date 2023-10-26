@@ -45,7 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-_Bool Var = 0;
+_Bool VarBtn = 0, VarPulse = 0;;
 
 uint8_t tx_buffer[8];
 const int tx_msg_len = 4;
@@ -69,8 +69,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim2)
   {
-	Var ^= 1; // for software tools
-	HAL_GPIO_TogglePin(OSCILLOSCOPE_OUT_GPIO_Port, OSCILLOSCOPE_OUT_Pin); // for hardware tools (oscilloscope)
+	VarBtn = 0;   // for software tools
+	HAL_GPIO_WritePin(OSCILLOSCOPE_OUT2_GPIO_Port, OSCILLOSCOPE_OUT2_Pin, GPIO_PIN_RESET); // for hardware tools (oscilloscope)
+	VarPulse = 1; // for software tools
+	HAL_GPIO_WritePin(OSCILLOSCOPE_OUT1_GPIO_Port, OSCILLOSCOPE_OUT1_Pin, GPIO_PIN_SET); // for hardware tools (oscilloscope)
+
+	HAL_TIM_Base_Start(&htim7);
+    while(__HAL_TIM_GET_FLAG(&htim7, TIM_FLAG_UPDATE) == 0);
+    __HAL_TIM_CLEAR_FLAG(&htim7, TIM_FLAG_UPDATE);
+    HAL_TIM_Base_Stop(&htim7);
+
+    VarPulse = 0; // for software tools
+	HAL_GPIO_WritePin(OSCILLOSCOPE_OUT1_GPIO_Port, OSCILLOSCOPE_OUT1_Pin, GPIO_PIN_RESET); // for hardware tools (oscilloscope)
+
+	HAL_TIM_Base_Stop_IT(&htim2);
   }
 }
 
@@ -86,12 +98,24 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     int time_ms = strtol((char*)tx_buffer, 0, 10);
     int tim3_arr = time_ms*1000 - 1;
 
-    HAL_TIM_Base_Stop_IT(&htim2);
-    __HAL_TIM_SET_COUNTER(&htim2, 0);
     __HAL_TIM_SET_AUTORELOAD(&htim2, tim3_arr);
-    HAL_TIM_Base_Start_IT(&htim2);
 
     HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+  }
+}
+
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == USER_Btn_Pin)
+  {
+	VarBtn = 1;   // for software tools
+	HAL_GPIO_WritePin(OSCILLOSCOPE_OUT2_GPIO_Port, OSCILLOSCOPE_OUT2_Pin, GPIO_PIN_SET); // for hardware tools (oscilloscope)
+	HAL_TIM_Base_Start_IT(&htim2);
   }
 }
 
@@ -127,8 +151,8 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   MX_TIM2_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
   HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 

@@ -1,0 +1,5 @@
+../Components/Src/dio.c:37:6:DIO_WriteLow	1
+../Components/Src/dio.c:47:6:DIO_WriteHigh	1
+../Components/Src/dio.c:58:6:DIO_Write	1
+../Components/Src/dio.c:68:6:DIO_Toggle	1
+../Components/Src/dio.c:78:7:DIO_Read	1

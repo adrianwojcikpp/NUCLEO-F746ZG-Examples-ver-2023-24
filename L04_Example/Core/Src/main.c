@@ -24,8 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdlib.h>
-#include "led_config.h"
+#include <stdio.h>
+#include "encoder_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,8 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t tx_buffer[32];
-const int tx_msg_len = 4;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,25 +58,15 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /**
-  * @brief  Rx Transfer completed callback.
-  * @param  huart UART handle.
+  * @brief  Period elapsed callback in non-blocking mode
+  * @param  htim TIM handle
   * @retval None
   */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if(huart == &huart3)
-  {
-    int duty = strtol((char*)&tx_buffer[1], 0, 10);
-
-    if(tx_buffer[0] == 'R' || tx_buffer[0] == 'r')
-      LED_PWM_WriteDuty(&hldr, duty);
-    else if(tx_buffer[0] == 'G' || tx_buffer[0] == 'g')
-      LED_PWM_WriteDuty(&hldg, duty);
-    else if(tx_buffer[0] == 'B' || tx_buffer[0] == 'b')
-      LED_PWM_WriteDuty(&hldb, duty);
-
-    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
-  }
+  uint8_t tx_buffer[32];
+  int tx_msg_len = sprintf((char*)tx_buffer, "Encoder counter: %lu\n\r", ENC_GetCounter(&henc1));
+  HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
 }
 /* USER CODE END 0 */
 
@@ -112,11 +101,10 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   MX_TIM7_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-  LED_PWM_Init(&hldr);
-  LED_PWM_Init(&hldg);
-  LED_PWM_Init(&hldb);
-  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+  ENC_Init(&henc1);
+  HAL_TIM_Base_Start_IT(&htim7);
   /* USER CODE END 2 */
 
   /* Infinite loop */

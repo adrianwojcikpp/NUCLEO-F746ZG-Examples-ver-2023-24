@@ -3,6 +3,12 @@ L00_Example/Debug
 L01_Example/Debug
 L02_Example/Debug
 L03_Example/Debug
+L04_Example/Debug
+L05_Example/Debug
+L06_Example/Debug
+L07_Example/Debug
+L08_Example/Debug
+L04_Example/Debug
 EXTRAS/Keypad_Example/Debug
 EXTRAS/Display_Example/Debug
 EXTRAS/Servo_Example/Debug
@@ -11,3 +17,4 @@ EXTRAS/RapidPrototype_Example/Debug
 L02_Example/.settings/language.settings.xml
 L02_Example/.settings/com.st.stm32cube.ide.mcu.sfrview.prefs
 
+L04_Example/Components/Src/pwm.c

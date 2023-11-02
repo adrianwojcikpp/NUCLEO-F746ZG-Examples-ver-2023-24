@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdlib.h>
 #include "led_config.h"
 /* USER CODE END Includes */
 
@@ -45,7 +46,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-float duty = 0;
+uint8_t tx_buffer[32];
+const int tx_msg_len = 4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,16 +59,24 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /**
-  * @brief  Period elapsed callback in non-blocking mode
-  * @param  htim TIM handle
+  * @brief  Rx Transfer completed callback.
+  * @param  huart UART handle.
   * @retval None
   */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if(htim == &htim7)
+  if(huart == &huart3)
   {
-    duty = (duty >= 100) ? (0) : (duty + 10);
-    LED_PWM_WriteDuty(&hldr, duty);
+    int duty = strtol((char*)&tx_buffer[1], 0, 10);
+
+    if(tx_buffer[0] == 'R' || tx_buffer[0] == 'r')
+      LED_PWM_WriteDuty(&hldr, duty);
+    else if(tx_buffer[0] == 'G' || tx_buffer[0] == 'g')
+      LED_PWM_WriteDuty(&hldg, duty);
+    else if(tx_buffer[0] == 'B' || tx_buffer[0] == 'b')
+      LED_PWM_WriteDuty(&hldb, duty);
+
+    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   }
 }
 /* USER CODE END 0 */
@@ -106,7 +116,7 @@ int main(void)
   LED_PWM_Init(&hldr);
   LED_PWM_Init(&hldg);
   LED_PWM_Init(&hldb);
-  HAL_TIM_Base_Start_IT(&htim7);
+  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -12,6 +12,7 @@ L04_Example/Debug
 EXTRAS/Keypad_Example/Debug
 EXTRAS/Display_Example/Debug
 EXTRAS/Servo_Example/Debug
+EXTRAS/WS2812_Example/Debug
 EXTRAS/RapidPrototype_Example/Debug
 
 L02_Example/.settings/language.settings.xml

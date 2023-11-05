@@ -36,7 +36,8 @@
   */
 void PWM_Init(PWM_Handle_TypeDef* hpwm)
 {
-  // TODO: implement initialization with HAL
+  PWM_WriteDuty(hpwm, hpwm->Duty);
+  HAL_TIM_PWM_Start(hpwm->Timer, hpwm->Channel);
 }
 
 /**
@@ -47,16 +48,17 @@ void PWM_Init(PWM_Handle_TypeDef* hpwm)
   */
 void PWM_WriteDuty(PWM_Handle_TypeDef* hpwm, float duty)
 {
-  // TODO: implement duty control with HAL
-
   // Saturate duty cycle value
-
+  if(duty < 0.0f)
+    duty = 0.0;
+  else if(duty > 100.0f)
+    duty = 100.0f;
   // Write duty to handle field
-
+  hpwm->Duty = duty;
   // Compute Capture/Compare Register value
-
+  int COMPARE = (duty * (__HAL_TIM_GET_AUTORELOAD(hpwm->Timer)+1)) / 100;
   // Write value to register
-
+  __HAL_TIM_SET_COMPARE(hpwm->Timer, hpwm->Channel, COMPARE);
 }
 
 /**

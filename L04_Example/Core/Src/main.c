@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <string.h>
 #include "encoder_config.h"
 /* USER CODE END Includes */
 
@@ -65,7 +66,7 @@ void SystemClock_Config(void);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   uint8_t tx_buffer[32];
-  int tx_msg_len = sprintf((char*)tx_buffer, "Encoder counter: %lu\n\r", ENC_GetCounter(&henc1));
+  int tx_msg_len = sprintf((char*)tx_buffer, "Encoder counter: %4lu\r", ENC_GetCounter(&henc1));
   HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
 }
 /* USER CODE END 0 */

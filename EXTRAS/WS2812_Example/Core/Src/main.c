@@ -46,7 +46,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-LED_WS2812_HANDLE_CONSTRUCTOR(hldln1, 8, &htim1, TIM_CHANNEL_1);
+LED_WS2812_HANDLE_CONSTRUCTOR(hldln1, 8*3, &htim1, TIM_CHANNEL_1);
 
 uint8_t tx_buffer[32];
 uint32_t tx_msg_len = 3;
@@ -100,7 +100,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
     for(int i = 0; i < hldln1.N; i++)
     {
-      float pwr = fmax(0.0f, fmin(1.0f, ((float)pos / (180.0f/8.0f)) - i));
+      float pwr = fmax(0.0f, fmin(1.0f, ((float)pos / (180.0f/24.0f)) - i));
 
       unsigned int R,G;
       R = pos * (pwr*max) / 180;

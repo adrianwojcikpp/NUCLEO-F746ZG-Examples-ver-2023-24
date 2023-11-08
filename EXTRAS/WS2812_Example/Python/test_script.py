@@ -2,7 +2,7 @@ import serial
 import time
 
 # Define the serial port and baud rate
-ser = serial.Serial('COM8', 115200) 
+ser = serial.Serial('COM9', 115200) 
 
 # Initialize the value to start from 0
 value = 0

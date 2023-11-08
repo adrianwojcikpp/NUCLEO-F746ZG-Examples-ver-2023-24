@@ -93,6 +93,8 @@ void Error_Handler(void);
 #define KEYPAD_COL2_GPIO_Port GPIOE
 #define KEYPAD_ROW4_Pin GPIO_PIN_13
 #define KEYPAD_ROW4_GPIO_Port GPIOE
+#define LED_WS2812_DIO_Pin GPIO_PIN_14
+#define LED_WS2812_DIO_GPIO_Port GPIOE
 #define RMII_TXD1_Pin GPIO_PIN_13
 #define RMII_TXD1_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14

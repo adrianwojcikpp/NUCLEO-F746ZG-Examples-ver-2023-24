@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -25,9 +26,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdlib.h>
+#include <math.h>
 #include "keypad.h"
 #include "disp.h"
 #include "servo.h"
+#include "led.h"
+#include "input_shaping.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,11 +61,16 @@ DISP_TM1637_HandleTypeDef hdisp1 = {
 };
 
 SERVO_Handle_TypeDef hservo1 = {
-  .PwmOut = PWM_INIT_HANDLE(&htim9, TIM_CHANNEL_1)
+  .PwmOut = PWM_INIT_HANDLE(&htim13, TIM_CHANNEL_1)
 };
+
+LED_WS2812_HANDLE_CONSTRUCTOR(hld1, 8, &htim1, TIM_CHANNEL_4);
+
+INPUT_SHAPING_HandleTypeDef hrl1 = { .RateLimit = 90.0f, .Ts = 0.02f, .x_prev = 90.0f };
 
 uint8_t tx_buffer[8];
 const int tx_msg_len = 4;
+unsigned int pos_ref = 90, pos_temp;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +83,27 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 
 /**
+ * @brief Writes colors to LEDs based on servo position
+ * @param[in/out] hled  : LED WS2812 handle
+ * @param[in]     pos   : servo position in degrees (0-180)
+ * @retval  None
+ */
+void SERVO_Position__TO__LED_WS2812_Color(unsigned int pos, LED_WS2812_Handle_TypeDef* hled)
+{
+  static const unsigned int max = 0x40;
+  for(int i = 0; i < hled->N; i++)
+  {
+    float pwr = fmax(0.0f, fmin(1.0f, ((float)pos / (180.0f/hled->N)) - i));
+
+    unsigned int R,G;
+    R = pos * (pwr*max) / 180;
+    G = (180-pos) * (pwr*max) / 180;
+    LED_WS2812_WriteColor_RGB(hled, i, (R << 16) | (G << 8));
+  }
+  LED_WS2812_Update(hled);
+}
+
+/**
   * @brief  Rx Transfer completed callback.
   * @param  huart UART handle.
   * @retval None
@@ -82,13 +112,48 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart == &huart3)
   {
-    int pos_temp = strtol((char*)tx_buffer, 0, 10);
-    DISP_TM1637_printDecUInt(&hdisp1, pos_temp);
-    SERVO_WritePosition(&hservo1, 180 - pos_temp);
-    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+    // position 0-180 degrees
+    if(tx_buffer[0] == 'P' || tx_buffer[0] == 'p')
+    {
+      pos_temp = strtol((char*)&tx_buffer[1], 0, 10);
+      pos_ref = (pos_temp > 180) ? 180 : pos_temp;
+      pos_temp = pos_ref;
+      DISP_TM1637_printDecUInt(&hdisp1, pos_ref);
+    }
+    // speed in degrees per second
+    else if(tx_buffer[0] == 'S' || tx_buffer[0] == 's')
+    {
+      hrl1.RateLimit = (float)strtol((char*)&tx_buffer[1], 0, 10);
+    }
+    HAL_UART_Receive_DMA(&huart3, tx_buffer, tx_msg_len);
   }
 }
 
+/**
+  * @brief  PWM Pulse finished callback in non-blocking mode
+  * @param  htim TIM handle
+  * @retval None
+  */
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim == hld1.Timer)
+    LED_WS2812_Callback(&hld1);
+}
+
+/**
+  * @brief  Period elapsed callback in non-blocking mode
+  * @param  htim TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim == hservo1.PwmOut.Timer)
+  {
+    float pos = INPUT_SHAPING_RateLimiter(&hrl1, pos_ref);
+    SERVO_Position__TO__LED_WS2812_Color(pos, &hld1);
+    SERVO_WritePosition(&hservo1, pos);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -119,14 +184,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART3_UART_Init();
+  MX_DMA_Init();
   MX_TIM9_Init();
+  MX_TIM1_Init();
+  MX_USART3_UART_Init();
+  MX_TIM13_Init();
   /* USER CODE BEGIN 2 */
   SERVO_Init(&hservo1);
-  SERVO_WritePosition(&hservo1, 90.0f);
+  SERVO_WritePosition(&hservo1, pos_ref);
+
+  HAL_TIM_Base_Start_IT(hservo1.PwmOut.Timer);
+
   DISP_TM1637_Init(&hdisp1);
-  DISP_TM1637_printDecUInt(&hdisp1, SERVO_ReadPosition(&hservo1));
-  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+  DISP_TM1637_printDecUInt(&hdisp1, pos_ref);
+
+  SERVO_Position__TO__LED_WS2812_Color(pos_ref, &hld1);
+
+  HAL_UART_Receive_DMA(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -134,7 +208,6 @@ int main(void)
   char key;
   unsigned int digit_cnt = 0;
   const unsigned int digit_max = 3;
-  int pos_temp;
 
   while (1)
   {
@@ -154,8 +227,8 @@ int main(void)
       // if ENTER (D)
       if(key == 'D')
       {
-        SERVO_WritePosition(&hservo1, 180 - pos_temp);
-        DISP_TM1637_printDecUInt(&hdisp1, 180 - SERVO_ReadPosition(&hservo1));
+        pos_ref = (pos_temp > 180) ? 180 : pos_temp;
+        DISP_TM1637_printDecUInt(&hdisp1, pos_ref);
         digit_cnt = 0;
       }
 

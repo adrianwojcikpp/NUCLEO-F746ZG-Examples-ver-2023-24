@@ -41,7 +41,7 @@ void SERVO_Init(SERVO_Handle_TypeDef* hservo)
 
 void SERVO_WritePosition(SERVO_Handle_TypeDef* hservo, float pos)
 {
-	hservo->Position = __SATURATION(pos, 0.0f, 180.0f);
+	hservo->Position = 180.0f - __SATURATION(pos, 0.0f, 180.0f);
 	float duty = __LINEAR_TRANSFORM(hservo->Position, 0.0f, 180.0f, SERVO_MIN_DUTY, SERVO_MAX_DUTY);
 	PWM_WriteDuty(&(hservo->PwmOut), duty);
 }

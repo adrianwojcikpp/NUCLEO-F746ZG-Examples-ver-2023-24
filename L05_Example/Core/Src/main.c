@@ -26,7 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include "bh1750_config.h"
+#include "led_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +51,9 @@
 /* USER CODE BEGIN PV */
 float Illuminance_lux = 0.0f;
 unsigned int Illuminance_lux_Int = 0;
+
+uint8_t tx_buffer[8];
+const int tx_msg_len = 3;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,6 +85,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
       cnt = 0;
     }
+  }
+}
+
+/**
+  * @brief  Rx Transfer completed callback.
+  * @param  huart UART handle.
+  * @retval None
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart == &huart3)
+  {
+    int duty_cycle = strtol((char*)tx_buffer, 0, 10);
+    LED_PWM_WriteDuty(&hld1, duty_cycle);
+    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   }
 }
 
@@ -119,7 +139,9 @@ int main(void)
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   BH1750_Init(&hbh1750);
+  LED_PWM_Init(&hld1);
   HAL_TIM_Base_Start_IT(&htim7);
+  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
   /* Infinite loop */

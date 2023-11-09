@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "bh1750_config.h"
 #include "led_config.h"
 /* USER CODE END Includes */
@@ -53,7 +54,7 @@ float Illuminance_lux = 0.0f;
 unsigned int Illuminance_lux_Int = 0;
 
 uint8_t tx_buffer[8];
-const int tx_msg_len = 3;
+const int tx_msg_len = 4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,14 +78,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     cnt++;
     Illuminance_lux = BH1750_ReadIlluminance_lux(&hbh1750);
     Illuminance_lux_Int = Illuminance_lux * 1000.0f;
-
-    if(cnt == 5)
-    {
-      uint8_t tx_buffer[32];
-      int tx_msg_len = sprintf((char*)tx_buffer, "Illuminance: %5u.%03u\r", Illuminance_lux_Int / 1000, Illuminance_lux_Int % 1000);
-      HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
-      cnt = 0;
-    }
   }
 }
 
@@ -97,8 +90,18 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart == &huart3)
   {
-    int duty_cycle = strtol((char*)tx_buffer, 0, 10);
-    LED_PWM_WriteDuty(&hld1, duty_cycle);
+    if(tx_buffer[0] == 'd' || tx_buffer[0] == 'D')
+    {
+      int duty_cycle = strtol((char*)&tx_buffer[1], 0, 10);
+      LED_PWM_WriteDuty(&hld1, duty_cycle);
+      HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+    }
+    if(strcmp((char*)tx_buffer, "read") == 0)
+    {
+      uint8_t tx_buffer[32];
+      int tx_msg_len = sprintf((char*)tx_buffer, "%05u.%03u\r", Illuminance_lux_Int / 1000, Illuminance_lux_Int % 1000);
+      HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
+    }
     HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   }
 }

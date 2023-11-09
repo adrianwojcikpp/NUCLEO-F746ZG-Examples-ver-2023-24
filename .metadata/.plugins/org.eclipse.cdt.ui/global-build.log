@@ -249,3 +249,41 @@ Finished building: default.size.stdout
  
 Finished building: L05_Example.list
  
+13:01:12 **** Incremental Build of configuration Debug for project L05_Example ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L05_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:99:15: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness [-Wpointer-sign]
+   99 |     if(strcmp(tx_buffer, "read") == 0)
+      |               ^~~~~~~~~
+      |               |
+      |               uint8_t * {aka unsigned char *}
+In file included from ../Core/Src/main.c:30:
+C:\ST\STM32CubeIDE_1.8.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.1.202309131626\tools\bin/../lib/gcc/arm-none-eabi/11.3.1/../../../../arm-none-eabi/include/string.h:36:18: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   36 | int      strcmp (const char *, const char *);
+      |                  ^~~~~~~~~~~~
+arm-none-eabi-gcc -o "L05_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L05_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L05_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: L05_Example.elf
+ 
+arm-none-eabi-size   L05_Example.elf 
+arm-none-eabi-objdump -h -S  L05_Example.elf  > "L05_Example.list"
+   text	   data	    bss	    dec	    hex	filename
+  27944	    132	   2292	  30368	   76a0	L05_Example.elf
+Finished building: default.size.stdout
+ 
+Finished building: L05_Example.list
+ 
+13:01:34 **** Incremental Build of configuration Debug for project L05_Example ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L05_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "L05_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L05_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L05_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: L05_Example.elf
+ 
+arm-none-eabi-size   L05_Example.elf 
+arm-none-eabi-objdump -h -S  L05_Example.elf  > "L05_Example.list"
+   text	   data	    bss	    dec	    hex	filename
+  27944	    132	   2292	  30368	   76a0	L05_Example.elf
+Finished building: default.size.stdout
+ 
+Finished building: L05_Example.list
+ 

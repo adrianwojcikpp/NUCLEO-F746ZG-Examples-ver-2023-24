@@ -26,7 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include "bmp2_config.h"
+#include "heater_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +53,9 @@ double temp = 0.0f;     // [degC]
 unsigned int temp_int;	// [mdegC]
 double press = 0.0f;    // [hPa]
 unsigned int press_int; // [Pa]
+
+uint8_t tx_buffer[8];
+const int tx_msg_len = 3;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,6 +94,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
   }
 }
+
+/**
+  * @brief  Rx Transfer completed callback.
+  * @param  huart UART handle.
+  * @retval None
+  */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart == &huart3)
+  {
+    int duty_cycle = strtol((char*)tx_buffer, 0, 10);
+    HEATER_PWM_WriteDuty(&hheater, duty_cycle);
+    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -122,9 +142,12 @@ int main(void)
   MX_USART3_UART_Init();
   MX_SPI4_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   BMP2_Init(&bmp2dev);
+  HEATER_PWM_Init(&hheater);
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
   /* Infinite loop */

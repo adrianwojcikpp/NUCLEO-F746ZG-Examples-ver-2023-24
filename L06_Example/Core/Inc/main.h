@@ -85,8 +85,6 @@ void Error_Handler(void);
 #define LD1_GPIO_Port GPIOB
 #define ON_Btn_Pin GPIO_PIN_14
 #define ON_Btn_GPIO_Port GPIOF
-#define LD6_Pin GPIO_PIN_15
-#define LD6_GPIO_Port GPIOF
 #define OFF_Btn_Pin GPIO_PIN_11
 #define OFF_Btn_GPIO_Port GPIOE
 #define RMII_TXD1_Pin GPIO_PIN_13

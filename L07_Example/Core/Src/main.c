@@ -49,6 +49,7 @@
 
 /* USER CODE BEGIN PV */
 float pot1_vol = 0.0f;
+float pot2_vol = 0.0f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,7 +71,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     HAL_ADC_Start(&hadc1);
     if(HAL_ADC_PollForConversion(&hadc1, ADC1_TIMEOUT) == HAL_OK)
-      pot1_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
+    {
+      if(hadc1.NbrOfCurrentConversionRank == 1)
+        pot1_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
+
+      else if(hadc1.NbrOfCurrentConversionRank == 2)
+        pot2_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
+
+      hadc1.NbrOfCurrentConversionRank = 1 + (hadc1.NbrOfCurrentConversionRank % ADC1_NUMBER_OF_CONV);
+    }
 
     LED_DIO_Write(&hldg1, pot1_vol > 1000.0f);
     LED_DIO_Write(&hldb1, pot1_vol > 2000.0f);
@@ -123,6 +132,7 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+  hadc1.NbrOfCurrentConversionRank = 1;
   HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 

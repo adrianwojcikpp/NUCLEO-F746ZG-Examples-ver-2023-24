@@ -22,7 +22,7 @@
 #define ADC_REG_MAX      (float)((1ul << ADC_BIT_RES) - 1)
 #define ADC_VOLTAGE_MAX  3.3f    // [V]
 
-#define ADC1_NUMBER_OF_CONV  1
+#define ADC1_NUMBER_OF_CONV  2
 #define ADC1_TIMEOUT         1 // [ms]
 
 /* Public macro --------------------------------------------------------------*/

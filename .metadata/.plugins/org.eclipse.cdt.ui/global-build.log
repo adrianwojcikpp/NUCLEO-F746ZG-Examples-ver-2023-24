@@ -1,27 +1,4 @@
-00:14:42 **** Incremental Build of configuration Debug for project L07_Example ****
-make -j12 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../Components/Src/led.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Components/Src/led.d" -MT"Components/Src/led.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Components/Src/led.o"
-arm-none-eabi-gcc "../Components/Src/led_config.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Components/Src/led_config.d" -MT"Components/Src/led_config.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Components/Src/led_config.o"
-arm-none-eabi-gcc -o "L07_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L07_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L07_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: L07_Example.elf
- 
-arm-none-eabi-size   L07_Example.elf 
-arm-none-eabi-objdump -h -S  L07_Example.elf  > "L07_Example.list"
-   text	   data	    bss	    dec	    hex	filename
-  18084	     56	   1856	  19996	   4e1c	L07_Example.elf
-Finished building: default.size.stdout
- 
-Finished building: L07_Example.list
- 
-00:14:46 **** Incremental Build of configuration Debug for project L07_Example ****
-make -j12 all 
-arm-none-eabi-size   L07_Example.elf 
-   text	   data	    bss	    dec	    hex	filename
-  18084	     56	   1856	  19996	   4e1c	L07_Example.elf
-Finished building: default.size.stdout
- 
-00:26:46 **** Incremental Build of configuration Debug for project L07_Example ****
+00:41:56 **** Incremental Build of configuration Debug for project L07_Example ****
 make -j12 all 
 arm-none-eabi-gcc "../Core/Src/adc.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/adc.d" -MT"Core/Src/adc.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/adc.o"
 arm-none-eabi-gcc "../Core/Src/gpio.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/gpio.d" -MT"Core/Src/gpio.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/gpio.o"
@@ -31,81 +8,21 @@ arm-none-eabi-gcc "../Core/Src/stm32f7xx_it.c" -mcpu=cortex-m7 -std=gnu11 -g3 -D
 arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/tim.d" -MT"Core/Src/tim.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/tim.o"
 arm-none-eabi-gcc "../Core/Src/usart.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/usart.d" -MT"Core/Src/usart.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/usart.o"
 arm-none-eabi-gcc "../Components/Src/led_config.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Components/Src/led_config.d" -MT"Components/Src/led_config.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Components/Src/led_config.o"
-../Core/Src/main.c: In function 'HAL_GPIO_EXTI_Callback':
-../Core/Src/main.c:88:14: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
-   88 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |              ^~~~~~~
-../Core/Src/main.c:30:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-   29 | #include "led_config.h"
-  +++ |+#include <stdio.h>
-   30 | /* USER CODE END Includes */
-../Core/Src/main.c:88:14: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
-   88 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |              ^~~~~~~
-../Core/Src/main.c:88:14: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-../Core/Src/main.c:88:78: warning: 'sprintf' writing a terminating nul past the end of the destination [-Wformat-overflow=]
-   88 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |                                                                              ^
-../Core/Src/main.c:88:14: note: 'sprintf' output between 33 and 43 bytes into a destination of size 32
-   88 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 arm-none-eabi-gcc -o "L07_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L07_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L07_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: L07_Example.elf
  
 arm-none-eabi-size   L07_Example.elf 
 arm-none-eabi-objdump -h -S  L07_Example.elf  > "L07_Example.list"
    text	   data	    bss	    dec	    hex	filename
-  19008	    136	   2192	  21336	   5358	L07_Example.elf
+  19184	    136	   2192	  21512	   5408	L07_Example.elf
 Finished building: default.size.stdout
  
 Finished building: L07_Example.list
  
-00:27:18 **** Incremental Build of configuration Debug for project L07_Example ****
+00:42:23 **** Incremental Build of configuration Debug for project L07_Example ****
 make -j12 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'HAL_GPIO_EXTI_Callback':
-../Core/Src/main.c:89:78: warning: 'sprintf' writing a terminating nul past the end of the destination [-Wformat-overflow=]
-   89 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |                                                                              ^
-../Core/Src/main.c:89:14: note: 'sprintf' output between 33 and 43 bytes into a destination of size 32
-   89 |   int tx_n = sprintf((char*)tx_buffer, "{ \"channel\" : 3, \"voltage\" : %d }", (int)pot1_vol);
-      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arm-none-eabi-gcc -o "L07_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L07_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L07_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: L07_Example.elf
- 
 arm-none-eabi-size   L07_Example.elf 
-arm-none-eabi-objdump -h -S  L07_Example.elf  > "L07_Example.list"
    text	   data	    bss	    dec	    hex	filename
-  19008	    136	   2192	  21336	   5358	L07_Example.elf
+  19184	    136	   2192	  21512	   5408	L07_Example.elf
 Finished building: default.size.stdout
- 
-Finished building: L07_Example.list
- 
-00:31:45 **** Incremental Build of configuration Debug for project L07_Example ****
-make -j12 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "L07_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L07_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L07_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: L07_Example.elf
- 
-arm-none-eabi-size   L07_Example.elf 
-arm-none-eabi-objdump -h -S  L07_Example.elf  > "L07_Example.list"
-   text	   data	    bss	    dec	    hex	filename
-  19000	    136	   2192	  21328	   5350	L07_Example.elf
-Finished building: default.size.stdout
- 
-Finished building: L07_Example.list
- 
-00:32:45 **** Incremental Build of configuration Debug for project L07_Example ****
-make -j12 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/AW/STM32CubeIDE/workspace_1.13.0/NUCLEO-F746ZG-Examples-ver-2023-24/L07_Example/Components/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "L07_Example.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\AW\STM32CubeIDE\workspace_1.13.0\NUCLEO-F746ZG-Examples-ver-2023-24\L07_Example\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="L07_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: L07_Example.elf
- 
-arm-none-eabi-size   L07_Example.elf 
-arm-none-eabi-objdump -h -S  L07_Example.elf  > "L07_Example.list"
-   text	   data	    bss	    dec	    hex	filename
-  19000	    136	   2192	  21328	   5350	L07_Example.elf
-Finished building: default.size.stdout
- 
-Finished building: L07_Example.list
  

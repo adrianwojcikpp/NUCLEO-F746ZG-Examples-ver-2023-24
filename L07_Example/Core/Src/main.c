@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -50,6 +51,8 @@
 /* USER CODE BEGIN PV */
 float pot1_vol = 0.0f;
 float pot2_vol = 0.0f;
+
+uint16_t adc1_conv_buffer[ADC1_NUMBER_OF_CONV];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,13 +74,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
   if(hadc == &hadc1)
   {
-    if(hadc1.NbrOfCurrentConversionRank == 1)
-      pot1_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
-
-    else if(hadc1.NbrOfCurrentConversionRank == 2)
-      pot2_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
-
-    hadc1.NbrOfCurrentConversionRank = 1 + (hadc1.NbrOfCurrentConversionRank % ADC1_NUMBER_OF_CONV);
+    pot1_vol = ADC_REG2VOLTAGE(adc1_conv_buffer[0]);
+    pot2_vol = ADC_REG2VOLTAGE(adc1_conv_buffer[1]);
 
     LED_DIO_Write(&hldg1, pot2_vol > 1000.0f);
     LED_DIO_Write(&hldb1, pot2_vol > 2000.0f);
@@ -94,7 +92,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim6)
   {
-    HAL_ADC_Start_IT(&hadc1);
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc1_conv_buffer, ADC1_NUMBER_OF_CONV);
   }
 }
 
@@ -139,11 +137,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART3_UART_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
+  MX_USART3_UART_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  hadc1.NbrOfCurrentConversionRank = 1;
   HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 

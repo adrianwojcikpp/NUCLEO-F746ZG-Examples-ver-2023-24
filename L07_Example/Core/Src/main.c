@@ -60,6 +60,31 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/**
+  * @brief  Regular conversion complete callback in non blocking mode
+  * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
+  *         the configuration information for the specified ADC.
+  * @retval None
+  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  if(hadc == &hadc1)
+  {
+    if(hadc1.NbrOfCurrentConversionRank == 1)
+      pot1_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
+
+    else if(hadc1.NbrOfCurrentConversionRank == 2)
+      pot2_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
+
+    hadc1.NbrOfCurrentConversionRank = 1 + (hadc1.NbrOfCurrentConversionRank % ADC1_NUMBER_OF_CONV);
+
+    LED_DIO_Write(&hldg1, pot2_vol > 1000.0f);
+    LED_DIO_Write(&hldb1, pot2_vol > 2000.0f);
+    LED_DIO_Write(&hldr1, pot2_vol > 3000.0f);
+  }
+}
+
 /**
   * @brief  Period elapsed callback in non-blocking mode
   * @param  htim TIM handle
@@ -69,21 +94,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim6)
   {
-    HAL_ADC_Start(&hadc1);
-    if(HAL_ADC_PollForConversion(&hadc1, ADC1_TIMEOUT) == HAL_OK)
-    {
-      if(hadc1.NbrOfCurrentConversionRank == 1)
-        pot1_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
-
-      else if(hadc1.NbrOfCurrentConversionRank == 2)
-        pot2_vol = ADC_REG2VOLTAGE(HAL_ADC_GetValue(&hadc1));
-
-      hadc1.NbrOfCurrentConversionRank = 1 + (hadc1.NbrOfCurrentConversionRank % ADC1_NUMBER_OF_CONV);
-    }
-
-    LED_DIO_Write(&hldg1, pot1_vol > 1000.0f);
-    LED_DIO_Write(&hldb1, pot1_vol > 2000.0f);
-    LED_DIO_Write(&hldr1, pot1_vol > 3000.0f);
+    HAL_ADC_Start_IT(&hadc1);
   }
 }
 

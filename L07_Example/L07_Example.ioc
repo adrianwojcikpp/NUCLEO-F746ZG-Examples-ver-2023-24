@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 ADC1.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_3
 ADC1.Channel-1\#ChannelRegularConversion=ADC_CHANNEL_10
-ADC1.DiscontinuousConvMode=ENABLE
+ADC1.DiscontinuousConvMode=DISABLE
 ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SamplingTime-0\#ChannelRegularConversion,NbrOfConversionFlag,NbrOfConversion,Rank-1\#ChannelRegularConversion,Channel-1\#ChannelRegularConversion,SamplingTime-1\#ChannelRegularConversion,DiscontinuousConvMode
 ADC1.NbrOfConversion=2
 ADC1.NbrOfConversionFlag=1
@@ -66,6 +66,7 @@ Mcu.UserConstants=
 Mcu.UserName=STM32F746ZGTx
 MxCube.Version=6.9.2
 MxDb.Version=DB.6.0.92
+NVIC.ADC_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.BusFault_IRQn=true\:0\:0\:false\:false\:true\:true\:false\:false
 NVIC.DebugMonitor_IRQn=true\:0\:0\:false\:false\:true\:true\:false\:false
 NVIC.EXTI15_10_IRQn=true\:2\:0\:true\:false\:true\:true\:true\:true
@@ -329,7 +330,7 @@ SH.ADCx_IN3.ConfNb=1
 SH.GPXTI13.0=GPIO_EXTI13
 SH.GPXTI13.ConfNb=1
 TIM6.IPParameters=Prescaler,Period
-TIM6.Period=999
+TIM6.Period=9999
 TIM6.Prescaler=107
 USART3.IPParameters=VirtualMode-Asynchronous
 USART3.VirtualMode-Asynchronous=VM_ASYNC

@@ -86,7 +86,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
       uint8_t tx_buffer[128];
       int tx_msg_len = sprintf((char*)tx_buffer,
-    		  "Temperature: %2u.%03u degC; Pressure: %5u.%02u hPa\r",
+    		  "{ \"temperature\" : %d.%03d, \"pressure\" : %d.%04d }\n",
     		  temp_int / 1000, temp_int % 1000,
 			  press_int / 100, press_int % 100);
       HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
@@ -143,6 +143,7 @@ int main(void)
   MX_SPI4_Init();
   MX_TIM2_Init();
   MX_TIM4_Init();
+  MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
   BMP2_Init(&bmp2dev);
   HEATER_PWM_Init(&hheater);

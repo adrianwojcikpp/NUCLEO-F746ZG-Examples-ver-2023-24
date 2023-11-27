@@ -22,7 +22,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* Public variables ----------------------------------------------------------*/
-HEATER_PWM_Handle_TypeDef hheater = HEATER_PWM_INIT_HANDLE(&htim4, TIM_CHANNEL_1, HEATER_ON_HIGH);
+HEATER_PWM_Handle_TypeDef hheater = HEATER_PWM_INIT_HANDLE(&htim9, TIM_CHANNEL_2, HEATER_ON_HIGH);
 
 /* Private function prototypes -----------------------------------------------*/
 

@@ -57,10 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SERVO_PWM_Pin GPIO_PIN_5
-#define SERVO_PWM_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
+#define SERVO_PWM_Pin GPIO_PIN_8
+#define SERVO_PWM_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define DISP_DIO_Pin GPIO_PIN_0

@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dac.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -26,11 +27,20 @@
 /* USER CODE BEGIN Includes */
 #include "aio.h"
 #include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <ctype.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct {
+  float Amplitude;
+  float Phase;      // [rad]
+  float Mean;
+  float Frequency;  // [Hz]
+  float SampleTime; // [s]
+} SINE_WAVE_TypeDef;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -47,7 +57,14 @@
 
 /* USER CODE BEGIN PV */
 uint8_t rx_buffer[8];
-const uint16_t rx_msg_len = 4;
+const uint16_t rx_msg_len = 5;
+SINE_WAVE_TypeDef sine_wave = {
+    .Amplitude = 1000,  /* mV */
+    .Phase = 0*M_PI,    /* rad */
+    .Frequency = 10,    /* Hz  */
+    .Mean = 1000,       /* mV */
+    .SampleTime = 0.001 /* s */
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,6 +76,14 @@ void SystemClock_Config(void);
  * @retval None
  */
 void DAC_SetVoltage(float voltage_mV);
+
+/**
+ * @brief Computes value of given sine wave at given discrete time.
+ * @param[in] sine_wave     : Structure with sine wave parameters.
+ * @param[in] discrete_time : Discrete time (sample number).
+ * @retval Sine wave value at discrete time.
+ */
+float SINE_WAVE_ReadValue(const SINE_WAVE_TypeDef* sine_wave, unsigned int discrete_time);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -72,9 +97,35 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart == &huart3)
   {
-    long int voltage_mV = strtol((char*)rx_buffer, NULL, 10);
-    DAC_SetVoltage(voltage_mV);
+    if(tolower(rx_buffer[0]) == 'a')
+    {
+      float amplitude = (float)strtol((char*)&rx_buffer[1], NULL, 10);
+      sine_wave.Amplitude = __SATURATION(amplitude, 0.0f, DAC_VOLTAGE_MAX / 2.0f);
+
+    }
+    else if(tolower(rx_buffer[0]) == 'm')
+    {
+      float mean = (float)strtol((char*)&rx_buffer[1], NULL, 10);
+      sine_wave.Mean = __SATURATION(mean, 0.0f, DAC_VOLTAGE_MAX / 2.0f);
+    }
+
     HAL_UART_Receive_IT(&huart3, rx_buffer, rx_msg_len);
+  }
+}
+
+/**
+  * @brief  Period elapsed callback in non-blocking mode
+  * @param  htim TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim == &htim7)
+  {
+    static unsigned long int time = 0;
+    float voltage_mV = SINE_WAVE_ReadValue(&sine_wave, time);
+    DAC_SetVoltage(voltage_mV);
+    time++;
   }
 }
 /* USER CODE END 0 */
@@ -109,9 +160,10 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   MX_DAC_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
-  DAC_SetVoltage(1000.0f);
+  HAL_TIM_Base_Start_IT(&htim7);
   HAL_UART_Receive_IT(&huart3, rx_buffer, rx_msg_len);
   /* USER CODE END 2 */
 
@@ -194,6 +246,19 @@ void DAC_SetVoltage(float voltage_mV)
   float voltage_sat_mV = DAC_VOLTAGE_SAT(voltage_mV);
   uint16_t dac_reg = DAC_VOLTAGE2REG(voltage_sat_mV);
   HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac_reg);
+}
+
+/**
+ * @brief Computes value of given sine wave at given discrete time.
+ * @param[in] sine_wave     : Structure with sine wave parameters.
+ * @param[in] discrete_time : Discrete time (sample number).
+ * @retval Sine wave value at discrete time.
+ */
+float SINE_WAVE_ReadValue(const SINE_WAVE_TypeDef* sine_wave, unsigned int discrete_time)
+{
+  float time = sine_wave->SampleTime*discrete_time;
+  float value = (sine_wave->Amplitude)*sinf(2.0f*M_PI*sine_wave->Frequency*time + sine_wave->Phase) + sine_wave->Mean;
+  return value;
 }
 
 /* USER CODE END 4 */

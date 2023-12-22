@@ -16,8 +16,11 @@ close all; clc;
 clear A B C_REF
 %% MATRIX MULTIPLICATION
 
-A = single(rand(3,3));
-B = single(rand(3,1));
+% square matrix size
+n = 3; % [-]
+
+A = single(rand(n,n));
+B = single(rand(n,1));
 C_REF = A*B;
 
 disp("LHS ARGUMENT (MATRIX)");

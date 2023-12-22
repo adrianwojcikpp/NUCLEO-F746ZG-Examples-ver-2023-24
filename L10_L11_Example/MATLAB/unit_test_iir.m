@@ -40,30 +40,41 @@ Axvec = abs(fftshift(fft(xvec,length(nvec)))); % [-]
 Axvec = Axvec / length(nvec);
 
 %% FILTER EXAMPLE 
+% Version 1: custom transfer function model -------------------------------
 
-% -- S-OPERATOR -----------------------------------------------------------
-s = tf('s');
+    % -- S-OPERATOR -------------------------------------------------------
+    s = tf('s');
 
-% -- FILTER PARAMS --------------------------------------------------------
-f = 10.0;  % [Hz]
-w = 2*pi*f; % [rad/s]
-e = 0.7;    % [-]
-T = 0.01;   % [s]
+    % -- MODEL PARAMS -----------------------------------------------------
+    f = 10.0;   % [Hz]
+    w = 2*pi*f; % [rad/s]
+    e = 0.7;    % [-]
 
-% -- CONTINUOUS TRANSFER FUNCTION -----------------------------------------
-G = 1 / ((s*T+1)*(1 + 2*e*s/w + s^2 / w^2));
+    % -- CONTINUOUS TRANSFER FUNCTION -------------------------------------
+    G = 1 / ((1 + 2*e*s/w + s^2 / w^2));
 
-% -- DISCRETIZATION -------------------------------------------------------
-H = c2d(G,ts, 'zoh');
+    % -- DISCRETIZATION ---------------------------------------------------
+    H = c2d(G,ts, 'zoh');
 
-% -- DISCRETE FILTER ------------------------------------------------------
-%[b,a] = cheby1(N,R,Wp,'low');
+    % -- DISCRETE FILTER --------------------------------------------------
+    b = H.num{1};
+    a = H.den{1};
+
+% Version 2: low-pass Chebyshev type I filter -----------------------------
+
+    % -- FILTER PARAMS ----------------------------------------------------
+    N = 3;          % [-]
+    R = 1;          % [-]
+    Wp = 17.5 / fs; % [-]
+
+    % -- DISCRETE FILTER --------------------------------------------------
+    [b,a] = cheby1(N,R,Wp,'low');
 
 % -- FILTER RESPONSE COMPUTING --------------------------------------------
 % filtered signal time series: MATLAB filter built-in function
-%xfvec_v1 = filter(b,a,xvec); 
+xfvec_v1 = filter(b,a,xvec); 
 % filtered signal time series: MATLAB lsim built-in function
-xfvec_v1 = lsim(H,xvec,tvec)'; 
+%xfvec_v1 = lsim(H,xvec,tvec)'; 
 
 % Filter frequency response
 % no. of samples
@@ -72,8 +83,7 @@ n = 10^4; % [-]
 frange = (-1/2 : 1/n : 1/2-1/n); % [-]
 fhvec = frange*fs;               % [Hz]
 % amplitude response
-%Ahvec_v1 = abs(freqz(b,a, 2*pi*frange)); % [-] frequency response
-Ahvec_v1 = abs(freqz(H.num{1},H.den{1}, 2*pi*frange)); % [-] frequency response
+Ahvec_v1 = abs(freqz(b,a, 2*pi*frange)); % [-] frequency response
 Ahvec_v1 = 20*log10(Ahvec_v1); % [dB]
 
 % filtered signal amplitude spectrum
@@ -82,7 +92,7 @@ Axfvec = abs(fftshift(fft(xfvec_v1, length(nvec)))); % [-]
 Axfvec = Axfvec / length(nvec);
 
 %% EXPORT FILTER TO .C/.H FILES
-biquad_coeffs = generate_biquad_df1('IIR1', H.num{1}, H.den{1});
+biquad_coeffs = generate_biquad_df1('IIR1', b, a);
 
 if length(biquad_coeffs) == 1
     %% FOR-LOOP REFERENCE FILTER RESPONSE COMPUTING

@@ -23,21 +23,39 @@
 /* Define --------------------------------------------------------------------*/
 
 /* Macro ---------------------------------------------------------------------*/
+#define BMP2_INIT_HANDLE(BMP2_HANDLE)               \
+  {                                                 \
+    .intf_ptr = (void*)&(BMP2_HANDLE),              \
+    .intf = BMP2_SPI_INTF,                          \
+    .read = bmp2_spi_read, .write = bmp2_spi_write, \
+    .delay_us = bmp2_delay_us                       \
+  }
 
 /* Private variables ---------------------------------------------------------*/
-BMP2_HandleTypeDef hbmp2 = {
-  .SPI = &hspi4,
-  .CS_Port = BMP2_CSB_GPIO_Port,
-  .CS_Pin = BMP2_CSB_Pin,
-  .MaxRetry = 10
+BMP2_HandleTypeDef hbmp2[] = {
+	{
+	  .SPI = &hspi4,
+	  .CS_Port = BMP2_CSB1_GPIO_Port,
+	  .CS_Pin = BMP2_CSB1_Pin,
+	  .MaxRetry = 10
+	},
+	{
+	  .SPI = &hspi4,
+	  .CS_Port = BMP2_CSB2_GPIO_Port,
+	  .CS_Pin = BMP2_CSB2_Pin,
+	  .MaxRetry = 10
+	},
+	{
+	  .SPI = &hspi4,
+	  .CS_Port = BMP2_CSB3_GPIO_Port,
+	  .CS_Pin = BMP2_CSB3_Pin,
+	  .MaxRetry = 10
+	}
 };
 
 /* Public variables ----------------------------------------------------------*/
-struct bmp2_dev bmp2dev = {
-  .intf_ptr = (void*) &hbmp2,
-  .intf = BMP2_SPI_INTF,
-  .read = bmp2_spi_read, .write = bmp2_spi_write,
-  .delay_us = bmp2_delay_us
+struct bmp2_dev bmp2dev[BMP2_NUM_OF_SENSORS] = {
+    BMP2_INIT_HANDLE(hbmp2[0]), BMP2_INIT_HANDLE(hbmp2[1]), BMP2_INIT_HANDLE(hbmp2[2])
 };
 
 /* Private function prototypes -----------------------------------------------*/

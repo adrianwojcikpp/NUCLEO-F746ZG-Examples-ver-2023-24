@@ -59,14 +59,18 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BMP2_SCK_Pin GPIO_PIN_2
 #define BMP2_SCK_GPIO_Port GPIOE
-#define BMP2_CSB_Pin GPIO_PIN_4
-#define BMP2_CSB_GPIO_Port GPIOE
+#define BMP2_CSB2_Pin GPIO_PIN_3
+#define BMP2_CSB2_GPIO_Port GPIOE
+#define BMP2_CSB1_Pin GPIO_PIN_4
+#define BMP2_CSB1_GPIO_Port GPIOE
 #define BMP2_SDO_Pin GPIO_PIN_5
 #define BMP2_SDO_GPIO_Port GPIOE
 #define BMP2_SDA_Pin GPIO_PIN_6
 #define BMP2_SDA_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
+#define BMP2_CSB3_Pin GPIO_PIN_8
+#define BMP2_CSB3_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1

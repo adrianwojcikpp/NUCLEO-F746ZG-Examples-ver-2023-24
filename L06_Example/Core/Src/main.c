@@ -49,10 +49,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-double temp = 0.0f;     // [degC]
-unsigned int temp_int;	// [mdegC]
-double press = 0.0f;    // [hPa]
-unsigned int press_int; // [Pa]
+double temp[BMP2_NUM_OF_SENSORS];            // [degC]
+unsigned int temp_int[BMP2_NUM_OF_SENSORS];	 // [mdegC]
+double press[BMP2_NUM_OF_SENSORS];           // [hPa]
+unsigned int press_int[BMP2_NUM_OF_SENSORS]; // [Pa]
 
 uint8_t tx_buffer[8];
 const int tx_msg_len = 3;
@@ -66,49 +66,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/**
-  * @brief  Period elapsed callback in non-blocking mode
-  * @param  htim TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  if(htim == &htim2)
-  {
-    static unsigned int cnt = 0;
-    cnt++;
-    BMP2_ReadData(&bmp2dev, &press, &temp);
 
-    temp_int = 1000*temp;
-    press_int = 100*press;
-
-    if(cnt == 4)
-    {
-      uint8_t tx_buffer[128];
-      int tx_msg_len = sprintf((char*)tx_buffer,
-    		  "{ \"temperature\" : %d.%03d, \"pressure\" : %d.%04d }\n",
-    		  temp_int / 1000, temp_int % 1000,
-			  press_int / 100, press_int % 100);
-      HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
-      cnt = 0;
-    }
-  }
-}
-
-/**
-  * @brief  Rx Transfer completed callback.
-  * @param  huart UART handle.
-  * @retval None
-  */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if(huart == &huart3)
-  {
-    int duty_cycle = strtol((char*)tx_buffer, 0, 10);
-    HEATER_PWM_WriteDuty(&hheater, duty_cycle);
-    HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
-  }
-}
 /* USER CODE END 0 */
 
 /**
@@ -117,6 +75,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -142,12 +101,12 @@ int main(void)
   MX_USART3_UART_Init();
   MX_SPI4_Init();
   MX_TIM2_Init();
-  MX_TIM4_Init();
   MX_TIM9_Init();
   /* USER CODE BEGIN 2 */
-  BMP2_Init(&bmp2dev);
+  for(int i = 0; i < BMP2_NUM_OF_SENSORS; i++)
+  	  BMP2_Init(&(bmp2dev[i]));
   HEATER_PWM_Init(&hheater);
-  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start(&htim2);
   HAL_UART_Receive_IT(&huart3, tx_buffer, tx_msg_len);
   /* USER CODE END 2 */
 
@@ -155,6 +114,30 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if(__HAL_TIM_GET_FLAG(&htim2, TIM_FLAG_UPDATE) == SET)
+    {
+      __HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
+
+      static unsigned int cnt = 0;
+      cnt = (cnt+1) % 4;
+      for(int i = 0; i < BMP2_NUM_OF_SENSORS; i++)
+      {
+        BMP2_ReadData(&(bmp2dev[i]), &(press[i]), &(temp[i]));
+        temp_int[i] = 1000*temp[i];
+        press_int[i] = 100*press[i];
+
+        if(cnt == 0)
+        {
+          uint8_t tx_buffer[128];
+          int tx_msg_len = sprintf((char*)tx_buffer,
+              "{ \"sensor\" : %d, \"temperature\" : %d.%03d, \"pressure\" : %d.%04d }\r\n",
+              i,
+              temp_int[i] / 1000, temp_int[i] % 1000,
+              press_int[i] / 100, press_int[i] % 100);
+          HAL_UART_Transmit(&huart3, tx_buffer, tx_msg_len, 100);
+        }
+      }
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

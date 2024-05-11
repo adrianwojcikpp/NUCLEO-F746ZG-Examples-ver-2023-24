@@ -43,7 +43,7 @@ typedef struct {
 #define BMP2_REG_ADDR_LEN     1  //! @see BMP280 technical note p. 31-32
 
 #define BMP2_TIMEOUT          5
-#define BMP2_NUM_OF_SENSORS   2
+#define BMP2_NUM_OF_SENSORS   3
 
 /* Macro ---------------------------------------------------------------------*/
 #define BMP2_GET_PRESS(dev)  ((BMP2_HandleTypeDef*)((dev)->intf_ptr))->ReadoutPress
@@ -52,7 +52,7 @@ typedef struct {
 #define BMP2_GET_MAX_RETRY(dev) ((BMP2_HandleTypeDef*)((dev)->intf_ptr))->MaxRetry
 
 /* Public variables ----------------------------------------------------------*/
-extern struct bmp2_dev bmp2dev;
+extern struct bmp2_dev bmp2dev[BMP2_NUM_OF_SENSORS];
 
 /* Public function prototypes ------------------------------------------------*/
 

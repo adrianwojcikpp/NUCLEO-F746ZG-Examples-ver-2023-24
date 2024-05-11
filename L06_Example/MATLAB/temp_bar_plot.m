@@ -6,8 +6,9 @@ configureTerminator(s, "LF");
 figure;
 ax = gca;
 xlabel('Sensor');
-ylabel('Temperature');
+ylabel('Temperature [deg C]');
 title('Temperature Readings');
+hold on; 
 
 % Initialize bar plot
 barHandle = bar([0, 1, 2], [NaN, NaN, NaN]);

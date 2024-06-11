@@ -30,6 +30,8 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+_Bool button_state, button_state_prev = 0;
+
 void delay(long int d)
 {
     for(long int i=0; i < d; i++);
@@ -37,24 +39,22 @@ void delay(long int d)
 
 int main(void)
 {
-	SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN;
 
-    RCC->AHB1ENR = RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN;
+    LED_PORT->MODER  &= ~(0x3UL << (LED_PIN << 1));
+    LED_PORT->MODER  |=  (0x1UL << (LED_PIN << 1));
+    LED_PORT->OTYPER &= ~(0x1UL << LED_PIN);
 
-    LED_PORT->MODER  &= ~(0x3 << (LED_PIN*2));
-    LED_PORT->MODER  |=  (0x1 << (LED_PIN*2));
-    LED_PORT->OTYPER &= ~(0x1 << LED_PIN);
-
-    BUTTON_PORT->MODER  &= ~(0x3 << (BUTTON_PIN*2));
-
-    _Bool button_state, button_state_prev;
+    BUTTON_PORT->MODER  &= ~(0x3UL << (BUTTON_PIN << 1));
 
     /* Loop forever */
     for(;;)
     {
     	button_state = (BUTTON_PORT->IDR >> BUTTON_PIN) & 0x01;
     	if(button_state == 1 && button_state_prev == 0)
+    	{
     		LED_PORT->ODR ^= (0x1 << LED_PIN);
+    	}
     	button_state_prev = button_state;
         delay(1000);
     }

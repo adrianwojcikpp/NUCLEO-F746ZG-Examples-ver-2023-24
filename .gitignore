@@ -17,6 +17,7 @@ EXTRAS/WS2812_Example/Debug
 EXTRAS/RapidPrototype_Example/Debug
 EXTRAS/LCD_I2C_Example/Debug
 EXTRAS/CMake_Example/Debug
+EXTRAS/Empty_Example/Debug
 
 L02_Example/.settings/language.settings.xml
 L02_Example/.settings/com.st.stm32cube.ide.mcu.sfrview.prefs
